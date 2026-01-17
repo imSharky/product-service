@@ -10,15 +10,15 @@ import dev.naman.productservice.dtos.GenericProductDto;
 import dev.naman.productservice.exceptions.NotFoundException;
 import dev.naman.productservice.models.Category;
 import dev.naman.productservice.models.Product;
-import dev.naman.productservice.repositories.CategoryRepository;
-import dev.naman.productservice.repositories.ProductRepository;
-import dev.naman.productservice.security.JwtObject;
+import dev.naman.productservice.repositories.jpa.CategoryRepository;
+import dev.naman.productservice.repositories.jpa.ProductRepository;
 
-@Primary
+
 @Service("selfProductServiceImpl")
 public class SelfProductServiceImpl implements ProductService {
 	private ProductRepository productRepository;
 	private CategoryRepository categoryRepository;
+    //private ProductElasticSearchRepository productElasticSearchRepository;
 
 	public SelfProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository) {
 		this.productRepository = productRepository;
@@ -53,13 +53,6 @@ public class SelfProductServiceImpl implements ProductService {
 			//return null;
 		//}
 		//return product; //if the product is not private then no need to authorization
-//		GenericProductDto genericProductDto = new GenericProductDto();
-//		genericProductDto.setId(product.getId());
-//		genericProductDto.setCategory(product.getCategory() != null ? product.getCategory().getName() : null);
-//		genericProductDto.setDescription(product.getDescription());
-//		genericProductDto.setImage(product.getImage());
-//		genericProductDto.setPrice(product.getPrice());
-//		genericProductDto.setTitle(product.getTitle());
 
 		return convertToDto(product);
 	}
@@ -75,13 +68,6 @@ public class SelfProductServiceImpl implements ProductService {
 		//dto to entity
 		Product product1 = new Product(productDto.getTitle(), productDto.getDescription(), productDto.getImage(), category, productDto.getPrice());
 		Product savedProduct = productRepository.save(product1);
-//		GenericProductDto response = new GenericProductDto();
-//		response.setId(savedProduct.getId());
-//		response.setTitle(savedProduct.getTitle());
-//		response.setDescription(savedProduct.getDescription());
-//		response.setImage(savedProduct.getImage());
-//		response.setCategory(savedProduct.getCategory().getName());
-//		response.setPrice(savedProduct.getPrice());
 
 		return convertToDto(savedProduct);
 
@@ -101,7 +87,12 @@ public class SelfProductServiceImpl implements ProductService {
 //		Optional<Product> productOptional = productRepository.findById(id);
 		Product product = productRepository.findById(id)
 										   .orElseThrow(() -> new RuntimeException("Product not found with id " + id));
-		productRepository.deleteById(id);
+        Long categoryId = product.getCategory().getId();
+        productRepository.deleteById(id);
+        //if there is no product of such category then delete that category
+        if(!productRepository.existsByCategory_id(categoryId)) {
+            categoryRepository.deleteById(categoryId);
+        }
 		//System.out.println("deleted successfully");
 
 		return convertToDto(product);

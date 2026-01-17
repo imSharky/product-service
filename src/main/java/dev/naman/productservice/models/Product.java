@@ -1,6 +1,7 @@
 package dev.naman.productservice.models;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Index;
 import jakarta.persistence.ManyToOne;
 
 @Entity

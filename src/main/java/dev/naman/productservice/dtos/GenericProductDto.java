@@ -1,6 +1,8 @@
 package dev.naman.productservice.dtos;
 
-public class GenericProductDto {
+import java.io.Serializable;
+
+public class GenericProductDto implements Serializable {
 	private Long id;
 	private String title;
 	private String description;

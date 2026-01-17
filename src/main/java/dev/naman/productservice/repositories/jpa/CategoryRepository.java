@@ -1,4 +1,4 @@
-package dev.naman.productservice.repositories;
+package dev.naman.productservice.repositories.jpa;
 
 import java.util.Optional;
 

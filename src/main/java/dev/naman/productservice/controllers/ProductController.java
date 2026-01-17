@@ -27,17 +27,17 @@ import dev.naman.productservice.services.ProductService;
 @RestController
 @RequestMapping("/products")
 public class ProductController {
-	//	//field injection
+    //	//field injection
 //	@Autowired
-	private ProductService productService;
-	private TokenValidator tokenValidator;
+    private ProductService productService;
+    private TokenValidator tokenValidator;
 
-	//constructor injection & it is best recommended
-	public ProductController(ProductService productService, TokenValidator tokenValidator) {  //@Qualifier("fakeStoreProductService")
-		this.productService = productService;
-		this.tokenValidator = tokenValidator;
-	}//@Qualifier("fakeStoreProductService") bcos to avoide confuse which object should it take bcos we have 2 service
-	//if @primary on serviceClass & @Qualifier both then Qual will take explicitly primary is only default if qual is not present
+    //constructor injection & it is best recommended
+    public ProductController(ProductService productService, TokenValidator tokenValidator) {  //@Qualifier("fakeStoreProductService")
+        this.productService = productService;
+        this.tokenValidator = tokenValidator;
+    }//@Qualifier("fakeStoreProductService") bcos to avoide confuse which object should it take bcos we have 2 service
+    //if @primary on serviceClass & @Qualifier both then Qual will take explicitly primary is only default if qual is not present
 
 //	//setter injection
 //  @Autowired
@@ -45,52 +45,41 @@ public class ProductController {
 //		this.productService = productService;
 //	}
 
-	@GetMapping()
-	public List<GenericProductDto> getAllProducts() { //created DTO bcos we are interacting outside the (system fakestore) we can't use mode; objects bcos thpse are replicating to db tables
-		return productService.getAllProducts();
-	}
+    @GetMapping()
+    public List<GenericProductDto> getAllProducts() { //created DTO bcos we are interacting outside the (system fakestore) we can't use mode; objects bcos thpse are replicating to db tables
+        return productService.getAllProducts();
+    }
 
-	//localhost:8080/products/{id}
-	//localhost:8080/products/123
-	@GetMapping("{id}")
-	public GenericProductDto getProductById(@RequestHeader(HttpHeaders.AUTHORIZATION) String authToken, @PathVariable("id") Long id) throws NotFoundException {
-		//@PathVariable("id") is used so that Long id (in parameter) will match with the localhost:8080/products/{id}
-		System.out.println(authToken);
-//		Optional<JwtObject> authTokenObjOptional;
-//		JwtObject authTokenObj = null;
-//		if(authToken!=null){ //validate the token to send the call to userservice, we create security package related to security
-//			authTokenObjOptional = tokenValidator.validateToken(authToken);
-//			if(authTokenObjOptional.isEmpty()){//suppose if this api somehow has invalidate token but we still allow to run, we can do anything it's our api
-//				//ignore
-//			}
-//			authTokenObj = authTokenObjOptional.get();
-//		}
-//		return productService.getProductById(id, authTokenObj.getUserId());
+    //localhost:8080/products/{id}
+    //localhost:8080/products/123
+    @GetMapping("{id}")
+    public GenericProductDto getProductById(@RequestHeader(HttpHeaders.AUTHORIZATION) String authToken, @PathVariable("id") Long id) throws NotFoundException {
+        //@PathVariable("id") is used so that Long id (in parameter) will match with the localhost:8080/products/{id}
 
-		// Call user-service via TokenValidator
-		boolean isValid = tokenValidator.validateToken(authToken);
+        // Call user-service via TokenValidator
+        boolean isValid = tokenValidator.validateToken(authToken);
 
-		if (!isValid) {
-			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token invalid or expired");
-		}
+        if (!isValid) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token invalid or expired");
+        }
 
-		return productService.getProductById(id);
-	}
+        return productService.getProductById(id);
+    }
 
-	@PostMapping()
-	public GenericProductDto createProduct(@RequestBody GenericProductDto product) { //@RequestBody whatever in the request body convert it into a GenericProductDto
-		return productService.createProduct(product);
-	}
+    @PostMapping()
+    public GenericProductDto createProduct(@RequestBody GenericProductDto product) { //@RequestBody whatever in the request body convert it into a GenericProductDto
+        return productService.createProduct(product);
+    }
 
-	@DeleteMapping("{id}")
-	public GenericProductDto deleteProductById(@PathVariable("id") Long id) {
-		return productService.deleteProduct(id);
-		//return new ResponseEntity<>(productService.deleteProduct(id), HttpStatus.OK); //make return type of ResponseEntity<GenericProductDto>
-		//we can set Http code ourself
-	}
+    @DeleteMapping("{id}")
+    public GenericProductDto deleteProductById(@PathVariable("id") Long id) {
+        return productService.deleteProduct(id);
+        //return new ResponseEntity<>(productService.deleteProduct(id), HttpStatus.OK); //make return type of ResponseEntity<GenericProductDto>
+        //we can set Http code ourself
+    }
 
-	@PutMapping("{id}")
-	public GenericProductDto updateProduct(@PathVariable("id") Long id, @RequestBody GenericProductDto productDto) {
-		return productService.updateProduct(id, productDto);
-	}
+    @PutMapping("{id}")
+    public GenericProductDto updateProduct(@PathVariable("id") Long id, @RequestBody GenericProductDto productDto) {
+        return productService.updateProduct(id, productDto);
+    }
 }

@@ -1,21 +1,11 @@
 package dev.naman.productservice;
 
-import java.util.UUID;
-
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.stereotype.Repository;
 
-import dev.naman.productservice.inheritancedemo.tableperclass.Mentor;
-import dev.naman.productservice.inheritancedemo.tableperclass.MentorRepository;
-import dev.naman.productservice.inheritancedemo.tableperclass.User;
-import dev.naman.productservice.inheritancedemo.tableperclass.UserRepository;
-import dev.naman.productservice.models.Category;
-import dev.naman.productservice.models.Product;
-import dev.naman.productservice.repositories.CategoryRepository;
-import dev.naman.productservice.repositories.ProductRepository;
+import dev.naman.productservice.repositories.jpa.CategoryRepository;
+import dev.naman.productservice.repositories.jpa.ProductRepository;
 
 @SpringBootApplication
 public class ProductserviceApplication implements CommandLineRunner {
