@@ -7,7 +7,7 @@ Postman (or any API client) for testing APIs
 Service Startup Order
 Start Redis: Make sure Redis is running on the configured host and port.
 Start User Service: This service is required for authentication and JWT generation.
-Start Payment Service: Run the Payment Service after Redis and User Service are up.
+Start Product Service: Run the Product Service after Redis and User Service are up.
 
 Authentication (JWT Token)
 This microservice is secured using JWT-based authentication.
